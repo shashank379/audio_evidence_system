@@ -1,0 +1,16 @@
+# Python environments and bytecode
+audio_evidence_env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/build/
+
+# Common local clutter
+.DS_Store
+*.log
+.env
+.env.*

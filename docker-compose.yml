@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: audio_evidence_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongodb-init:/docker-entrypoint-initdb.d
+    networks:
+      - audio_evidence_network
+
+  # ganache:
+  #   image: trufflesuite/ganache:latest
+  #   container_name: audio_evidence_ganache
+  #   ports:
+  #     - "7545:8545"
+  #   command: >
+  #     ganache-cli
+  #     --host 0.0.0.0
+  #     --port 8545
+  #     --accounts 10
+  #     --defaultBalanceEther 100
+  #     --mnemonic "your test mnemonic here for consistent accounts"
+  #     --networkId 1337
+  #     --gasLimit 6721975
+  #     --gasPrice 20000000000
+  #   networks:
+  #     - audio_evidence_network
+
+  ganache:
+    image: trufflesuite/ganache:latest
+    container_name: audio_evidence_ganache
+    ports:
+      - "7545:8545"
+    command: >
+      --host=0.0.0.0
+      --port=8545
+      --accounts=10
+      --defaultBalanceEther=100
+      --mnemonic="your test mnemonic here for consistent accounts"
+      --networkId=1337
+      --gasLimit=6721975
+      --gasPrice=20000000000
+    networks:
+      - audio_evidence_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: audio_evidence_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/audio_evidence_db?authSource=admin
+      - GANACHE_URL=http://ganache:8545
+    volumes:
+      - ./uploads:/app/uploads
+      - ./models:/app/models
+    depends_on:
+      - mongodb
+      - ganache
+    networks:
+      - audio_evidence_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: audio_evidence_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+    networks:
+      - audio_evidence_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  audio_evidence_network:
+    driver: bridge

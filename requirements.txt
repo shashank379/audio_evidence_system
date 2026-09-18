@@ -1,0 +1,41 @@
+# ---------------- Core Backend ----------------
+flask
+flask-cors
+pymongo
+web3
+werkzeug
+
+# ---------------- Audio Processing ----------------
+librosa
+soundfile
+pydub
+pywavelets
+
+# ---------------- ML / AI ----------------
+numpy
+scipy
+scikit-learn
+joblib
+tensorflow==2.20.0
+
+# ---------------- SpeechBrain (Speaker Verification) ----------------
+torch>=2.1
+torchaudio>=2.1
+speechbrain==1.0.2
+
+# ---------------- Security & Auth ----------------
+bcrypt
+PyJWT
+
+# ---------------- Reporting & Visualization ----------------
+reportlab
+matplotlib
+
+# ---------------- Google APIs ----------------
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+
+# ---------------- Compatibility ----------------
+importlib-metadata==8.4.0
